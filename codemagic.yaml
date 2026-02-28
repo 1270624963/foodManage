@@ -37,13 +37,13 @@
             npx cap add ios
           fi
           npx cap sync ios
-          PODFILE_PATH="$(find ios -maxdepth 4 -name Podfile | head -n 1)"
+          PODFILE_PATH="$(find ios -name Podfile | head -n 1)"
           if [ -z "$PODFILE_PATH" ]; then
             echo "Podfile not found under ios/ after cap sync"
             exit 1
           fi
           IOS_DIR="$(dirname "$PODFILE_PATH")"
-          WORKSPACE_PATH="$(find "$IOS_DIR" -maxdepth 3 -name '*.xcworkspace' | head -n 1)"
+          WORKSPACE_PATH="$(find "$IOS_DIR" -name '*.xcworkspace' | head -n 1)"
           if [ -z "$WORKSPACE_PATH" ]; then
             echo "Xcode workspace not found under $IOS_DIR"
             exit 1
@@ -58,9 +58,9 @@
           pod install
       - name: Set iOS bundle id
         script: |
-          INFO_PLIST="$(find "$IOS_DIR" -maxdepth 4 -name Info.plist | grep '/App/' | head -n 1)"
+          INFO_PLIST="$(find "$IOS_DIR" -name Info.plist | grep '/App/' | head -n 1)"
           if [ -z "$INFO_PLIST" ]; then
-            INFO_PLIST="$(find "$IOS_DIR" -maxdepth 4 -name Info.plist | head -n 1)"
+            INFO_PLIST="$(find "$IOS_DIR" -name Info.plist | head -n 1)"
           fi
           /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $BUNDLE_ID" "$INFO_PLIST" || true
       - name: Configure code signing
