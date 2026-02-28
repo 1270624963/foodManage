@@ -9,7 +9,6 @@
       cocoapods: default
       vars:
         BUNDLE_ID: "com.food.manager"
-        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
         SUPABASE_URL: "https://ltuhbuituubmpfcvlppp.supabase.co"
         SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0dWhidWl0dXVibXBmY3ZscHBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjc0NTAsImV4cCI6MjA4NzgwMzQ1MH0.6bjGmRIY0bsaOoTZI-qQR9Q9OA1LO-OwSKMB5nSI7zY"
@@ -38,14 +37,32 @@
             npx cap add ios
           fi
           npx cap sync ios
+          PODFILE_PATH="$(find ios -maxdepth 4 -name Podfile | head -n 1)"
+          if [ -z "$PODFILE_PATH" ]; then
+            echo "Podfile not found under ios/ after cap sync"
+            exit 1
+          fi
+          IOS_DIR="$(dirname "$PODFILE_PATH")"
+          WORKSPACE_PATH="$(find "$IOS_DIR" -maxdepth 3 -name '*.xcworkspace' | head -n 1)"
+          if [ -z "$WORKSPACE_PATH" ]; then
+            echo "Xcode workspace not found under $IOS_DIR"
+            exit 1
+          fi
+          echo "Using IOS_DIR=$IOS_DIR"
+          echo "Using XCODE_WORKSPACE=$WORKSPACE_PATH"
+          echo "IOS_DIR=$IOS_DIR" >> $CM_ENV
+          echo "XCODE_WORKSPACE=$WORKSPACE_PATH" >> $CM_ENV
       - name: Install CocoaPods
         script: |
-          cd ios/App
+          cd "$IOS_DIR"
           pod install
       - name: Set iOS bundle id
         script: |
-          cd ios/App
-          /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $BUNDLE_ID" "App/Info.plist" || true
+          INFO_PLIST="$(find "$IOS_DIR" -maxdepth 4 -name Info.plist | grep '/App/' | head -n 1)"
+          if [ -z "$INFO_PLIST" ]; then
+            INFO_PLIST="$(find "$IOS_DIR" -maxdepth 4 -name Info.plist | head -n 1)"
+          fi
+          /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $BUNDLE_ID" "$INFO_PLIST" || true
       - name: Configure code signing
         script: |
           xcode-project use-profiles
