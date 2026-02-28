@@ -37,25 +37,38 @@
             npx cap add ios
           fi
           npx cap sync ios
-          PODFILE_PATH="$(find ios -name Podfile | head -n 1)"
-          if [ -z "$PODFILE_PATH" ]; then
-            echo "Podfile not found under ios/ after cap sync"
+          XCODE_PROJECT_PATH="$(find ios -name '*.xcodeproj' | head -n 1)"
+          if [ -z "$XCODE_PROJECT_PATH" ]; then
+            echo "Xcode project not found under ios/ after cap sync"
             exit 1
           fi
-          IOS_DIR="$(dirname "$PODFILE_PATH")"
+          IOS_DIR="$(dirname "$XCODE_PROJECT_PATH")"
           WORKSPACE_PATH="$(find "$IOS_DIR" -name '*.xcworkspace' | head -n 1)"
-          if [ -z "$WORKSPACE_PATH" ]; then
-            echo "Xcode workspace not found under $IOS_DIR"
-            exit 1
-          fi
+          PODFILE_PATH="$(find "$IOS_DIR" -name Podfile | head -n 1)"
           echo "Using IOS_DIR=$IOS_DIR"
-          echo "Using XCODE_WORKSPACE=$WORKSPACE_PATH"
+          echo "Using XCODE_PROJECT=$XCODE_PROJECT_PATH"
+          if [ -n "$WORKSPACE_PATH" ]; then
+            echo "Using XCODE_WORKSPACE=$WORKSPACE_PATH"
+          else
+            echo "No workspace found, will build with project"
+          fi
+          if [ -n "$PODFILE_PATH" ]; then
+            echo "Found Podfile=$PODFILE_PATH"
+          else
+            echo "No Podfile found, skipping CocoaPods install"
+          fi
           echo "IOS_DIR=$IOS_DIR" >> $CM_ENV
+          echo "XCODE_PROJECT=$XCODE_PROJECT_PATH" >> $CM_ENV
           echo "XCODE_WORKSPACE=$WORKSPACE_PATH" >> $CM_ENV
+          echo "PODFILE_PATH=$PODFILE_PATH" >> $CM_ENV
       - name: Install CocoaPods
         script: |
-          cd "$IOS_DIR"
-          pod install
+          if [ -n "$PODFILE_PATH" ]; then
+            cd "$IOS_DIR"
+            pod install
+          else
+            echo "Skipping pod install because Podfile is not present."
+          fi
       - name: Set iOS bundle id
         script: |
           INFO_PLIST="$(find "$IOS_DIR" -name Info.plist | grep '/App/' | head -n 1)"
@@ -68,9 +81,15 @@
           xcode-project use-profiles
       - name: Build signed IPA
         script: |
-          xcode-project build-ipa \
-            --workspace "$XCODE_WORKSPACE" \
-            --scheme "$XCODE_SCHEME"
+          if [ -n "$XCODE_WORKSPACE" ]; then
+            xcode-project build-ipa \
+              --workspace "$XCODE_WORKSPACE" \
+              --scheme "$XCODE_SCHEME"
+          else
+            xcode-project build-ipa \
+              --project "$XCODE_PROJECT" \
+              --scheme "$XCODE_SCHEME"
+          fi
     artifacts:
       - build/ios/ipa/*.ipa
       - build/ios/archive/*.xcarchive
