@@ -39,7 +39,8 @@ function deriveProjectRef(supabaseUrl) {
 
 const env = {
   ...readEnvFile(path.join(ROOT, ".env")),
-  ...readEnvFile(path.join(ROOT, ".env.local"))
+  ...readEnvFile(path.join(ROOT, ".env.local")),
+  ...process.env
 };
 
 const supabaseUrl = requireValue(env, ["SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_URL"], "SUPABASE_URL");

@@ -5,12 +5,14 @@
     instance_type: mac_mini_m2
     environment:
       xcode: latest
-      node: 20
+      node: 22
       cocoapods: default
       vars:
         BUNDLE_ID: "com.food.manager"
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
+        SUPABASE_URL: "https://ltuhbuituubmpfcvlppp.supabase.co"
+        SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0dWhidWl0dXVibXBmY3ZscHBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjc0NTAsImV4cCI6MjA4NzgwMzQ1MH0.6bjGmRIY0bsaOoTZI-qQR9Q9OA1LO-OwSKMB5nSI7zY"
       groups:
         - app_store_credentials
     cache:
@@ -26,7 +28,7 @@
           if [ ! -d "ios/App" ]; then
             npx cap add ios
           fi
-          npm run cap:sync
+          npm run prepare:web
           npx cap sync ios
       - name: Install CocoaPods
         script: |
