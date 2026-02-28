@@ -99,4 +99,3 @@ node scripts/local_backend_test.mjs
 
 - `.env.supabase.example`
 - `.gitignore`
-## sbp_a25c5b992e119c89f8ad431cc707853569810b71
