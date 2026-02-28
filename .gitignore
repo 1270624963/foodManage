@@ -1,0 +1,15 @@
+.idea/
+.npm-cache/
+*.log
+node_modules/
+www/.DS_Store
+android/.gradle/
+android/app/build/
+android/build/
+build/
+gradle-cache/
+.android/
+
+# Local env files
+.env
+.env.local

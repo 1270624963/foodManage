@@ -1,0 +1,25 @@
+﻿{
+  "name": "food",
+  "version": "1.0.0",
+  "description": "食材管理库 App",
+  "main": "api.js",
+  "scripts": {
+    "sync:env": "node scripts/sync_env.mjs",
+    "prepare:web": "npm run sync:env && powershell -ExecutionPolicy Bypass -File scripts/prepare_web.ps1",
+    "serve:web": "node scripts/dev_server.mjs 8080",
+    "android:live:prepare": "powershell -ExecutionPolicy Bypass -File scripts/live_prepare.ps1",
+    "android:live:serve": "npm run serve:web",
+    "cap:add:android": "npm run prepare:web && npx cap add android",
+    "cap:sync": "npm run prepare:web && npx cap sync android",
+    "android:debug": "npm run cap:sync && cd android && gradlew.bat assembleDebug"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
+  }
+}

@@ -1,0 +1,13 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="食材管理库">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b98ee"/>
+      <stop offset="100%" stop-color="#2e84d3"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="256" height="256" rx="56" fill="url(#g)"/>
+  <rect x="54" y="58" width="148" height="140" rx="18" fill="#ffffff" opacity="0.96"/>
+  <path d="M74 94h108M74 122h108M74 150h66" stroke="#2f86d8" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="182" cy="150" r="26" fill="#52b67d"/>
+  <path d="M170 150l9 9 17-17" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

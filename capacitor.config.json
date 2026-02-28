@@ -1,0 +1,9 @@
+﻿{
+  "appId": "com.food.manager",
+  "appName": "食材管理库",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}

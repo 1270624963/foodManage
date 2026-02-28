@@ -1,0 +1,92 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#3b98ee">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="食材管理库">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/app-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/app-icon.svg">
+  <title>食材管理库</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section id="loginView" class="view login-view">
+      <div class="login-card">
+        <h1>食材管理库</h1>
+        <p>登录后可同步你在本机的食材数据</p>
+        <form id="loginForm">
+          <label for="usernameInput">用户名</label>
+          <input id="usernameInput" type="text" placeholder="请输入用户名" required minlength="2" maxlength="64">
+          <label for="passwordInput">密码</label>
+          <input id="passwordInput" type="password" placeholder="请输入密码" required minlength="4" maxlength="32">
+          <button type="submit">登录</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="appView" class="view hidden">
+      <header id="topHeader" class="top-header"></header>
+
+      <section id="homePage" class="page"></section>
+      <section id="statsPage" class="page hidden"></section>
+      <section id="profilePage" class="page hidden"></section>
+
+      <nav class="tabbar">
+        <button class="tab active" data-tab="home">首页</button>
+        <button class="tab" data-tab="stats">统计</button>
+        <button class="tab" data-tab="profile">我的</button>
+      </nav>
+    </section>
+  </main>
+
+  <section id="foodModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-card">
+      <h3 id="modalTitle">新增食材</h3>
+      <form id="foodForm">
+        <input id="foodIdInput" type="hidden">
+        <label for="foodNameInput">食材名称</label>
+        <input id="foodNameInput" type="text" required maxlength="24" placeholder="例如：西红柿">
+
+        <label for="foodCategoryInput">分类</label>
+        <select id="foodCategoryInput" required></select>
+
+        <label for="foodQuantityInput">剩余数量</label>
+        <input id="foodQuantityInput" type="text" required maxlength="24" placeholder="例如：500克">
+
+        <div class="date-row">
+          <div class="date-field">
+            <label for="foodInDateInput">入库日期</label>
+            <input id="foodInDateInput" type="date" required>
+          </div>
+          <div class="date-field">
+            <label for="foodExpireInput">保质期至</label>
+            <input id="foodExpireInput" type="date" required>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button id="cancelFoodBtn" type="button" class="btn-secondary">取消</button>
+          <button type="submit" class="btn-primary">保存</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section id="loadingMask" class="loading-mask hidden" aria-hidden="true">
+    <div class="loading-panel">
+      <span class="loading-spinner"></span>
+      <span class="loading-text">处理中...</span>
+    </div>
+  </section>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

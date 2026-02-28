@@ -1,0 +1,58 @@
+﻿workflows:
+  ios-ipa:
+    name: iOS IPA Build (Capacitor)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      xcode: latest
+      node: 20
+      cocoapods: default
+      vars:
+        BUNDLE_ID: "com.food.manager"
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
+      groups:
+        - app_store_credentials
+    cache:
+      cache_paths:
+        - $HOME/.npm
+        - $HOME/Library/Caches/CocoaPods
+    scripts:
+      - name: Install JS dependencies
+        script: |
+          npm ci
+      - name: Prepare iOS project
+        script: |
+          if [ ! -d "ios/App" ]; then
+            npx cap add ios
+          fi
+          npm run cap:sync
+          npx cap sync ios
+      - name: Install CocoaPods
+        script: |
+          cd ios/App
+          pod install
+      - name: Set iOS bundle id
+        script: |
+          cd ios/App
+          /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $BUNDLE_ID" "App/Info.plist" || true
+      - name: Configure code signing
+        script: |
+          xcode-project use-profiles
+      - name: Build signed IPA
+        script: |
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - build/ios/archive/*.xcarchive
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      email:
+        recipients:
+          - 1270624963@qq.com
+        notify:
+          success: true
+          failure: true
+
