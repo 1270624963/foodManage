@@ -25,10 +25,18 @@
           npm ci
       - name: Prepare iOS project
         script: |
+          node scripts/sync_env.mjs
+          mkdir -p www
+          rm -rf www/*
+          cp index.html styles.css app.js api.js config.js manifest.webmanifest sw.js www/
+          if [ -d "icons" ]; then
+            rm -rf www/icons
+            cp -R icons www/icons
+          fi
           if [ ! -d "ios/App" ]; then
+            npm install --no-save @capacitor/ios@^8.1.0
             npx cap add ios
           fi
-          npm run prepare:web
           npx cap sync ios
       - name: Install CocoaPods
         script: |
